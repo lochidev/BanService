@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
 namespace BanService.Services
@@ -12,14 +11,13 @@ namespace BanService.Services
         private readonly IDistributedCache _distributedCache;
         private readonly ILogger<BannerService> _logger;
 
-        public BannerService(IMemoryCache cache,
-            IDistributedCache distributedCache, ILogger<BannerService> logger)
+        public BannerService(IDistributedCache distributedCache, ILogger<BannerService> logger)
         {
             _distributedCache = distributedCache;
             _logger = logger;
         }
 
-        public override Task<BanResponse> BanUser(BanRequest request, ServerCallContext context)
+        public override async Task<BanResponse> BanUser(BanRequest request, ServerCallContext context)
         {
             try
             {
@@ -27,22 +25,23 @@ namespace BanService.Services
                 {
                     AbsoluteExpirationRelativeToNow = request.Duration.ToTimeSpan()
                 };
-                _distributedCache.SetString($"{request.Identifier}_{request.ServiceId}", request.ServiceId,
+                await _distributedCache.SetStringAsync($"{request.Identifier}_{request.ServiceId}", request.ServiceId,
                     cacheEntryOptions);
-                return Task.FromResult(new BanResponse {IsBanned = true});
+                return new BanResponse {IsBanned = true};
             }
             catch (Exception e)
             {
                 _logger.LogCritical("Exception when banning user: {Message}", e.Message);
-                return Task.FromResult(new BanResponse {IsBanned = false});
+                return new BanResponse {IsBanned = false};
             }
         }
 
         public override async Task<IsBannedResponse> IsBanned(IsBannedRequest request, ServerCallContext context)
         {
+            var data = await _distributedCache.GetStringAsync($"{request.Identifier}_{request.ServiceId}");
             return new IsBannedResponse
             {
-                IsBanned = await _distributedCache.GetStringAsync($"{request.Identifier}_{request.ServiceId}") == null
+                IsBanned = data != null
             };
         }
 
