@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <UserSecretsId>52bf3f0b-d44b-4ee3-aafe-1a098003e184</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Protobuf Include="Protos\ban.proto" GrpcServices="Server"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Google.Protobuf" Version="3.18.0"/>
+        <PackageReference Include="Grpc.AspNetCore.Server" Version="2.40.0-pre1"/>
+        <PackageReference Include="Grpc.Core.Api" Version="2.40.0"/>
+        <PackageReference Include="Grpc.Net.Common" Version="2.40.0-pre1"/>
+        <PackageReference Include="Grpc.Tools" Version="2.40.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="6.0.0-rc.1.21452.15"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1"/>
+        <PackageReference Include="System.Memory" Version="4.5.4"/>
+    </ItemGroup>
+
+</Project>

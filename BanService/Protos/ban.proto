@@ -1,0 +1,35 @@
+syntax = "proto3";
+import "google/protobuf/duration.proto"; 
+option csharp_namespace = "BanService";
+
+package ban;
+
+service Banner {
+
+  rpc IsBanned (IsBannedRequest) returns (IsBannedResponse);
+  rpc BanUser (BanRequest) returns (BanResponse);
+  rpc UnbanUser (UnbanRequest) returns (UnbanResponse);
+}
+message BanRequest{
+	string identifier = 1;
+	google.protobuf.Duration duration = 2;
+	string service_id = 3;
+}
+message BanResponse{
+	bool is_banned = 1;
+}
+message IsBannedRequest{
+	string identifier = 1;
+	string service_id = 2;
+}
+message IsBannedResponse{
+	bool is_banned = 2;
+}
+message UnbanRequest{
+	string identifier = 1;
+	string service_id = 2;
+}
+message UnbanResponse{
+	bool success = 1;
+}
+
