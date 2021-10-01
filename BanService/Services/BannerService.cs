@@ -47,7 +47,7 @@ namespace BanService.Services
 
         public override async Task<UnbanResponse> UnbanUser(UnbanRequest request, ServerCallContext context)
         {
-            if (string.IsNullOrEmpty(request.Identifier) && string.IsNullOrEmpty(request.ServiceId))
+            if (string.IsNullOrEmpty(request.Identifier) || string.IsNullOrEmpty(request.ServiceId))
                 return new UnbanResponse {Success = false};
             await _distributedCache.RemoveAsync($"{request.Identifier}_{request.ServiceId}");
             return new UnbanResponse {Success = true};
